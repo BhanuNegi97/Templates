@@ -21,6 +21,8 @@ namespace ApiTemplate
     using CorrelationId;
 #endif
     using Microsoft.AspNetCore.Builder;
+    using Microsoft.AspNetCore.Http;
+    using Microsoft.AspNetCore.Mvc;
 #if (!ForwardedHeaders && HostFiltering)
     using Microsoft.AspNetCore.HostFiltering;
 #endif
@@ -49,6 +51,27 @@ namespace ApiTemplate
             services.AddCorrelationId();
             return services;
         }
+
+        public static IServiceCollection AddCustomApiBehavior(this IServiceCollection services) =>
+            services.Configure<ApiBehaviorOptions>(
+                options =>
+                {
+                    options.InvalidModelStateResponseFactory = context =>
+                    {
+                        var problemDetails = new ValidationProblemDetails(context.ModelState)
+                        {
+                            Type = "https://asp.net/core",
+                            Title = $"{context.ModelState.ErrorCount} validation error(s) occurred.",
+                            Status = StatusCodes.Status400BadRequest,
+                            Detail = "Please refer to the errors property for additional details.",
+                            Instance = context.HttpContext.Request.Path
+                        };
+                        return new BadRequestObjectResult(problemDetails)
+                        {
+                            ContentTypes = { "application/problem+json", "application/problem+xml" }
+                        };
+                    };
+                });
 
         /// <summary>
         /// Configures caching for the application. Registers the <see cref="IDistributedCache"/> and

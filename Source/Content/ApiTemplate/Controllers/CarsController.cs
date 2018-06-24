@@ -8,7 +8,6 @@ namespace ApiTemplate.Controllers
     using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.JsonPatch;
     using Microsoft.AspNetCore.Mvc;
-    using Microsoft.AspNetCore.Mvc.ModelBinding;
     using Microsoft.Net.Http.Headers;
 
     [Route("[controller]")]
@@ -115,7 +114,7 @@ namespace ApiTemplate.Controllers
         [HttpGet("", Name = CarsControllerRoute.GetCarPage)]
         [HttpHead("")]
         [ProducesResponseType(typeof(PageResult<Car>), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(ModelStateDictionary), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public Task<IActionResult> GetPage(
             [FromServices] IGetCarPageCommand command,
@@ -138,7 +137,7 @@ namespace ApiTemplate.Controllers
 #endif
         [HttpPatch("{carId}", Name = CarsControllerRoute.PatchCar)]
         [ProducesResponseType(typeof(Car), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(ModelStateDictionary), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public Task<IActionResult> Patch(
             [FromServices] IPatchCarCommand command,
@@ -160,7 +159,7 @@ namespace ApiTemplate.Controllers
 #endif
         [HttpPost("", Name = CarsControllerRoute.PostCar)]
         [ProducesResponseType(typeof(Car), StatusCodes.Status201Created)]
-        [ProducesResponseType(typeof(ModelStateDictionary), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]
         public Task<IActionResult> Post(
             [FromServices] IPostCarCommand command,
             [FromBody] SaveCar car,
@@ -182,7 +181,7 @@ namespace ApiTemplate.Controllers
 #endif
         [HttpPut("{carId}", Name = CarsControllerRoute.PutCar)]
         [ProducesResponseType(typeof(Car), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(ModelStateDictionary), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public Task<IActionResult> Put(
             [FromServices] IPutCarCommand command,
